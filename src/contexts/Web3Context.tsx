@@ -4,6 +4,7 @@ import React from 'react'
 import Web3Modal from 'web3modal'
 
 import WalletConnectProvider from '@walletconnect/web3-provider'
+import WalletConnectApi from '@walletconnect/web3-subprovider'
 import { DEFAULT_NETWORK_ID, INFURA_ID, RPC_XDAI_CHAIN } from 'config/constants'
 import { NetworkConfig } from 'config/networkConfig'
 import { useLocalStorage } from 'hooks/useLocalStorageValue'
@@ -13,6 +14,9 @@ import { RealityService } from 'services/reality'
 import { Wrapper1155Service } from 'services/wrapper1155'
 import { createCPK } from 'util/cpk'
 import { getLogger } from 'util/logger'
+import { Connectors } from 'web3-react'
+
+const { WalletConnectConnector } = Connectors
 
 export enum Web3ContextStatus {
   NotAsked = 'notAsked',
@@ -94,11 +98,23 @@ interface Props {
   children: JSX.Element
 }
 
+const WalletConnect = new WalletConnectConnector({
+  api: WalletConnectApi,
+  bridge: 'https://safe-walletconnect.gnosis.io',
+  supportedNetworkURLs: {
+    1: `https://mainnet.infura.io/v3/${INFURA_ID}`,
+    4: `https://rinkeby.infura.io/v3/${INFURA_ID}`,
+    100: RPC_XDAI_CHAIN,
+  },
+  defaultNetwork: 4,
+})
+
 const web3Modal = new Web3Modal({
   cacheProvider: true,
   providerOptions: {
     walletconnect: {
-      package: WalletConnectProvider,
+      //package: WalletConnectProvider,
+      package: WalletConnect,
       options: {
         infuraId: INFURA_ID,
         rpc: {
