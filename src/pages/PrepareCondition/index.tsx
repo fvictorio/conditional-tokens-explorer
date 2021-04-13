@@ -143,7 +143,11 @@ export const PrepareCondition = () => {
     mode: 'onChange',
     defaultValues: defaultValuesOmen,
   })
-  const { dirty: isDirtyOmenCondition, isValid: isValidOmenCondition } = formStateOmenCondition
+  const {
+    dirty: isDirtyOmenCondition,
+    dirtyFields: dirtyFieldsOmenCondition,
+    isValid: isValidOmenCondition,
+  } = formStateOmenCondition
 
   const category = watchOmenCondition('category')
   const questionTitle = watchOmenCondition('questionTitle')
@@ -163,6 +167,7 @@ export const PrepareCondition = () => {
   const [outcomes, setOutcomes] = useState<Array<string>>([])
   const [outcome, setOutcome] = useState<string>('')
   const [outcomesBeingEdited, setOutcomesBeingEdited] = useState<boolean[]>([])
+  const [categoryManuallyChanged, setCategoryChangedManually] = useState(false)
 
   const addOutcome = useCallback(() => {
     const sanitizedOutcome = outcome.trim()
@@ -564,6 +569,21 @@ export const PrepareCondition = () => {
     [setErrorOmenCondition]
   )
 
+  const isActuallyDirtyOmenCondition = React.useMemo(() => {
+    // If category actually changed by user interaction
+    if (categoryManuallyChanged) return isDirtyOmenCondition
+
+    // If is dirty, is possible that something else besides the initial dirty field also changed
+    if (
+      isDirtyOmenCondition &&
+      dirtyFieldsOmenCondition.size === 1 &&
+      dirtyFieldsOmenCondition.has('category')
+    )
+      return false
+
+    return isDirtyOmenCondition
+  }, [categoryManuallyChanged, dirtyFieldsOmenCondition, isDirtyOmenCondition])
+
   const customConditionFormHasErrors = Object.keys(errorsCustomCondition).length > 0
   const omenConditionFormHasErrors =
     isQuestionAlreadyExist ||
@@ -831,7 +851,12 @@ export const PrepareCondition = () => {
                     as={CategoriesDropdown}
                     control={omenControl}
                     name="category"
-                    onClick={(value: string) => setValueOmenCondition('category', value, true)}
+                    onClick={(value: string) => {
+                      if (category && !categoryManuallyChanged) {
+                        setCategoryChangedManually(true)
+                      }
+                      setValueOmenCondition('category', value, true)
+                    }}
                     rules={{ required: true }}
                     value={category}
                   />
@@ -938,7 +963,8 @@ export const PrepareCondition = () => {
           when={
             conditionType === ConditionType.custom
               ? isDirtyCustomCondition && prepareConditionStatus.isNotAsked()
-              : (isDirtyOmenCondition || outcomes.length > 0) && prepareConditionStatus.isNotAsked()
+              : (isActuallyDirtyOmenCondition || outcomes.length > 0) &&
+                prepareConditionStatus.isNotAsked()
           }
         />
       </CenteredCard>
