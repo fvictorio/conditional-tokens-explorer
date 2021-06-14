@@ -6,6 +6,7 @@ import { Web3ContextStatus, useWeb3Context } from 'contexts/Web3Context'
 import { ConditionDetails } from 'pages/ConditionDetails'
 import { ConditionsList } from 'pages/ConditionsList'
 import { CookiePolicy } from 'pages/CookiePolicy'
+import { Landing } from 'pages/Landing'
 import { MergePositions } from 'pages/MergePositions'
 import { PositionDetails } from 'pages/PositionDetails'
 import { PositionsList } from 'pages/PositionsList'
@@ -42,6 +43,7 @@ const ProtectedRoute: React.FC<RouteProps> = (props) => {
 export const Routes: React.FC = () => {
   return (
     <Switch>
+      <ProtectedRoute component={Landing} exact path="/landing" />
       <ProtectedRoute component={ConditionsList} exact path="/conditions" />
       <ProtectedRoute component={ConditionDetails} exact path="/conditions/:conditionId" />
       <ProtectedRoute component={PositionsList} exact path="/positions" />
@@ -55,7 +57,7 @@ export const Routes: React.FC = () => {
       <ProtectedRoute component={CookiePolicy} path="/cookie-policy" />
       <ProtectedRoute component={PrivacyPolicy} path="/privacy-policy" />
       <Route exact path="/">
-        <Redirect to="/conditions" />
+        <Redirect to="/landing" />
       </Route>
       <Route path="*">
         <InfoCard message="Page not found..." title="Error 404" />

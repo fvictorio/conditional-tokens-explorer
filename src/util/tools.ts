@@ -88,6 +88,10 @@ export const formatTS = (timestamp: number): string => {
   return moment.unix(timestamp).utc().format('YYYY-MM-DD - HH:mm [UTC]')
 }
 
+export const formatTSAlt = (timestamp: number): string => {
+  return moment.unix(timestamp).utc().format('MMM D, YYYY - HH:mm')
+}
+
 export const formatTSSimple = (timestamp: number): string => {
   return moment.unix(timestamp).utc().format('YYYY-MM-DD')
 }
@@ -417,7 +421,7 @@ export const getTokenSummary = async (
   } else {
     try {
       const erc20Service = new ERC20Service(provider, collateralToken)
-      const { address, decimals, symbol, name } = await erc20Service.getProfileSummary()
+      const { address, decimals, name, symbol } = await erc20Service.getProfileSummary()
 
       return {
         address,

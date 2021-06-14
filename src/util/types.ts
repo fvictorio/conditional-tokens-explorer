@@ -242,6 +242,19 @@ export enum PositionSearchOptions {
   WrappedCollateralAddress = 'wrappedCollateralAddress',
 }
 
+export enum LandingSearchOptions {
+  All = 'all',
+  ConditionId = 'conditionId',
+  QuestionId = 'questionId',
+  QuestionText = 'questionText',
+  OracleAddress = 'oracleAddress',
+  CreatorAddress = 'creatorAddress',
+  PositionId = 'positionId',
+  CollateralSymbol = 'collateralSymbol',
+  CollateralAddress = 'collateralAddress',
+  WrappedCollateralAddress = 'wrappedCollateralAddress',
+}
+
 export interface AdvancedFilterPosition {
   CollateralValue: {
     type: Maybe<string>

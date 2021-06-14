@@ -41,12 +41,25 @@ interface Props {
   href?: string
   onClick?: () => void
   truncateInTheMiddle?: boolean
+  truncateLeft?: number
+  truncateRight?: number
   value: string
 }
 
 export const Hash: React.FC<Props> = (props) => {
-  const { externalLink, href, onClick, truncateInTheMiddle = true, value, ...restProps } = props
-  const shownValue = truncateInTheMiddle ? truncateStringInTheMiddle(value, 10, 8) : value
+  const {
+    externalLink,
+    href,
+    onClick,
+    truncateInTheMiddle = true,
+    truncateLeft = 10,
+    truncateRight = 8,
+    value,
+    ...restProps
+  } = props
+  const shownValue = truncateInTheMiddle
+    ? truncateStringInTheMiddle(value, truncateLeft, truncateRight)
+    : value
   const port = window.location.port !== '' ? `:${window.location.port}` : ''
 
   return (
